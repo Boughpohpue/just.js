@@ -1,4 +1,8 @@
-import Is from './isthis.js';
+import extendObjectPrototype from './.external/jxtensions-1.0.1.js';
+import { Is } from './isthis.js';
+
+extendObjectPrototype();
+
 
 /* Just a bit wild */
 export class Wild {

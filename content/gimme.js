@@ -1,4 +1,3 @@
-
 /* Just a getter */
 export class Gimme {
   static get currentTime() {

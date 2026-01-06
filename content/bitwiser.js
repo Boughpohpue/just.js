@@ -1,4 +1,4 @@
-import Is from './isthis.js';
+import { Is } from './isthis.js';
 
 /* Just a bit wiser */
 export class Bitwiser {

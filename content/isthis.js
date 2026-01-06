@@ -1,4 +1,4 @@
-/* Just this is */
+/* Just is this */
 export class Is {
   static thisTrue(q) {
     return q === true;

@@ -26,7 +26,7 @@ console.log(Reflector.reflect(ExampleClass));
 console.log("\n==================== INSTANCE REFLECTION ====================\n");
 
 const instance = new ExampleClass("demo");
-console.log("const instance = new ExampleClass(\"demo\");");
+console.log("const instance = new ExampleClass(\"demo\");\n");
 
 console.log("Reflector.getProperties(instance):");
 console.log(Reflector.getProperties(instance));

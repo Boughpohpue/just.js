@@ -10,7 +10,10 @@ export class Name {
       if (typeof o === "object") {
         name = o.name;
         if (name === undefined) {
-          name = o.constructor.name;
+          let cn = o.constructor.name;
+          if (cn !== "Object") {
+            name = cn;
+          }
         }
         if (name === undefined) {
           for (let prop in o) {
@@ -30,7 +33,6 @@ export class Name {
         }
       }
     } catch (e) {}
-
     return name;
   }
 }

@@ -14,15 +14,18 @@ export class Name {
       if (typeof o === "object") {
         name = o.name;
         if (name === undefined) {
+          let cn = o.constructor.name;
+          if (cn !== "Object") {
+            name = cn;
+          }
+        }
+        if (name === undefined) {
           for (let prop in o) {
             if (o.hasOwnProperty(prop)) {
               name = prop;
               break;
             }
           }
-        }
-        if (name === undefined) {
-          name = o.constructor.name;
         }
       } else if (typeof o === "function") {
         name = Name.of(o.prototype);
@@ -34,7 +37,6 @@ export class Name {
         }
       }
     } catch (e) {}
-
     return name;
   }
 }

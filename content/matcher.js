@@ -1,5 +1,5 @@
-import extendObjectPrototype from './.external/jxtensions-1.0.1.js';
 import { Is } from './isthis.js';
+import extendObjectPrototype from 'https://boughpohpue.github.io/jxtensions/compiled/jxtensions-1.0.1.js';
 
 extendObjectPrototype();
 

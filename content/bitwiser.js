@@ -27,12 +27,12 @@ export class Bitwiser {
       return null;
     }
     let items = [];
-    let current = value;
-    while (current > 0) {
-      if (value != current && (value & current) > 0) {
+    let current = 1n;
+    while (current <= value) {
+      if ((value & current) !== 0n) {
         items.push(current);
       }
-      current = 1n >> current;
+      current <<= 1n;
     }
     return items;
   }
@@ -46,7 +46,7 @@ export class Bitwiser {
     if (values.some((b) => !Is.thisBigInt(b))) {
       return null;
     }
-    return values.filter((b) => val > b && (val & b) > 0);
+    return values.filter((b) => (val & b) !== 0n);
   }
 }
 

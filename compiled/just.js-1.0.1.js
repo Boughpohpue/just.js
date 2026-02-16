@@ -6,7 +6,7 @@
 /* Just a nameof */
 export class Name {
   static of(o) {
-    if (o == undefined || o == null) {
+    if (o === undefined || o === null) {
       return o;
     }
     let name = undefined;
@@ -25,10 +25,13 @@ export class Name {
           name = o.constructor.name;
         }
       } else if (typeof o === "function") {
-        let body = o.toString();
-        let head = body.substr(0, Math.min(body.indexOf("("), body.indexOf("{"))).trim();
-        let parts = head.split(" ");
-        name = parts[parts.length - 1];
+        name = Name.of(o.prototype);
+        if (name === undefined) {
+          let body = o.toString();
+          let head = body.substr(0, Math.min(body.indexOf("("), body.indexOf("{"))).trim();
+          let parts = head.split(" ");
+          name = parts[parts.length - 1];
+        }
       }
     } catch (e) {}
 
@@ -152,6 +155,20 @@ export class Gimme {
 }
 /* <---------------------------------------------------------------< gimme.js <---<<< */
 
+/* >>>---> otis.js >----------------------------------------------------------------> */
+/* Just a scribe */
+export class Otis {
+  static log(content, source = "") {
+    const src = source == "" ? "" : ` [${source}]`;
+    console.log(`${Gimme.currentTime}${src}: ${content}`);
+  }
+  static error(content, source = "") {
+    const src = source == "" ? "" : ` [${source}]`;
+    console.error(`${Gimme.currentTime}${src}: ${content}`);
+  }
+}
+/* <----------------------------------------------------------------< otis.js <---<<< */
+
 /* >>>---> bitwiser.js >------------------------------------------------------------> */
 /* Just a bit wiser */
 export class Bitwiser {
@@ -180,12 +197,12 @@ export class Bitwiser {
       return null;
     }
     let items = [];
-    let current = value;
-    while (current > 0) {
-      if (value != current && (value & current) > 0) {
+    let current = 1n;
+    while (current <= value) {
+      if ((value & current) !== 0n) {
         items.push(current);
       }
-      current = 1n >> current;
+      current <<= 1n;
     }
     return items;
   }
@@ -199,14 +216,14 @@ export class Bitwiser {
     if (values.some((b) => !Is.thisBigInt(b))) {
       return null;
     }
-    return values.filter((b) => val > b && (val & b) > 0);
+    return values.filter((b) => (val & b) !== 0n);
   }
 }
 /* <------------------------------------------------------------< bitwiser.js <---<<< */
 
 /* >>>---> matcher.js >-------------------------------------------------------------> */
 /* Prerequisites */
-import extendObjectPrototype from './jxtensions-1.0.1.js';
+import extendObjectPrototype from 'https://boughpohpue.github.io/jxtensions/compiled/jxtensions-1.0.1.js';
 extendObjectPrototype();
 /* Just a bit wild */
 export class Wild {
@@ -249,6 +266,51 @@ export class Matcher {
   }
 }
 /* <-------------------------------------------------------------< matcher.js <---<<< */
+
+/* >>>---> reflector.js >-----------------------------------------------------------> */
+/* Just a reflector */
+export class Reflector {
+  static getMethods = (i) => this.#filterDescriptors(i, desc => this.#isMethod(desc));
+  static getGetters = (i) => this.#filterDescriptors(i, desc => this.#isGetter(desc));
+  static getSetters = (i) => this.#filterDescriptors(i, desc => this.#isSetter(desc));
+  static getProperties = (i) => this.#filterDescriptors(i, desc => this.#isProperty(desc), false);
+  static reflect(target) {
+    if (target == null) throw new Error("Cannot reflect null.");
+    const instance = this.#getInstance(target);
+    const ctor = this.#getConstructor(target);
+    return {
+      typeName: ctor?.name ?? null,
+      instanceProperties: this.getProperties(instance),
+      instanceMethods: this.getMethods(instance),
+      instanceGetters: this.getGetters(instance),
+      instanceSetters: this.getSetters(instance),
+      staticProperties: this.getProperties(ctor),
+      staticMethods: this.getMethods(ctor),
+      staticGetters: this.getGetters(ctor),
+      staticSetters: this.getSetters(ctor)
+    };
+  }
+
+  static #isFunction = (i) => typeof i === "function";
+  static #isInstance = (i) => i && typeof i === "object";
+  static #getInstance = (i) => this.#isInstance(i) ? i : null;
+  static #getConstructor = (i) => this.#isFunction(i) ? i : i.constructor;
+  static #isGetter = (d) => !!d.get;
+  static #isSetter = (d) => !!d.set;
+  static #isMethod = (d) => this.#isFunction(d.value);
+  static #isProperty = (d) => !(this.#isMethod(d) || this.#isGetter(d) || this.#isSetter(d));
+  static #isInternalKey = (k) => ["constructor", "prototype", "length", "name", "arguments", "caller"].includes(k);
+  static #filterDescriptors(item, predicate, forMethods = true) {
+    if (!item) return [];
+    const descriptors = this.#isInstance(item) && forMethods
+      ? Object.getOwnPropertyDescriptors(this.#getConstructor(item).prototype)
+      : Object.getOwnPropertyDescriptors(item);
+    return Object.entries(descriptors)
+      .filter(([key, desc]) => !this.#isInternalKey(key) && predicate(desc))
+      .map(([key]) => key);
+  }
+}
+/* <-----------------------------------------------------------< reflector.js <---<<< */
 
 export default nameof;
 

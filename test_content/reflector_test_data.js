@@ -1,6 +1,11 @@
+export const SecretSymbol = Symbol("secret_symbol");
+
 export class ExampleClass {
   descr = "blahdescr";
   static staticDescrUpper = "BLAHDESCR";
+
+  [SecretSymbol] = 6;
+  static [SecretSymbol] = 9;
 
   #privateVar = 12;
   static #privateStaticVar = 144;
@@ -29,6 +34,13 @@ export class ExampleClass {
   }
   static set staticSetterMethod(val) {
     this.#privateStaticVar = val;
+  }
+
+  [SecretSymbol]() {
+    return "hidden instance";
+  }
+  static [SecretSymbol]() {
+    return "hidden static";
   }
 
   #privMethod() {

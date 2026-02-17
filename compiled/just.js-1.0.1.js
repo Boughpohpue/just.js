@@ -304,12 +304,13 @@ export class Reflector {
   static #isInternalKey = (k) => ["constructor", "prototype", "length", "name", "arguments", "caller"].includes(k);
   static #filterDescriptors(item, predicate, forMethods = true) {
     if (!item) return [];
-    const descriptors = this.#isInstance(item) && forMethods
-      ? Object.getOwnPropertyDescriptors(this.#getConstructor(item).prototype)
-      : Object.getOwnPropertyDescriptors(item);
-    return Object.entries(descriptors)
-      .filter(([key, desc]) => !this.#isInternalKey(key) && predicate(desc))
-      .map(([key]) => key);
+    const source = this.#isInstance(item) && forMethods
+      ? this.#getConstructor(item).prototype
+      : item;
+    const descriptors = Object.getOwnPropertyDescriptors(source);
+    return Reflect.ownKeys(descriptors)
+      .filter((key) => !this.#isInternalKey(key) && predicate(descriptors[key]))
+      .map((key) => typeof key === "symbol" ? key.toString() : key);
   }
 }
 /* <-----------------------------------------------------------< reflector.js <---<<< */

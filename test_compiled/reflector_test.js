@@ -1,5 +1,5 @@
 import { Reflector } from '../compiled/just.js-1.0.1.js';
-import { ExampleClass } from './reflector_test_data.js'
+import { SecretSymbol, ExampleClass } from './reflector_test_data.js'
 
 
 console.warn("\n==================== CLASS DEFINITION ====================\n");

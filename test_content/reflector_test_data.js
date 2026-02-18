@@ -1,5 +1,8 @@
 export const SecretSymbol = Symbol("secret_symbol");
 
+const codeStyleMap = new Map([["style", "color: goldenrod;"]]);
+
+console.info("Defining class for testing...");
 export class ExampleClass {
   descr = "blahdescr";
   static staticDescrUpper = "BLAHDESCR";
@@ -50,5 +53,10 @@ export class ExampleClass {
     return this.#privateStaticVar;
   }
 }
+console.log(ExampleClass.toString(), codeStyleMap);
+
+console.info('\nCreating instance for testing...');
+export const exmplClsInstance = new ExampleClass("testing");
+console.log("const exmplClsInstance = new ExampleClass(\"testing\");", codeStyleMap);
 
 export default ExampleClass;

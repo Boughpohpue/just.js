@@ -1,45 +1,33 @@
 import { Reflector } from '../compiled/just.js-1.0.1.js';
-import { SecretSymbol, ExampleClass } from './reflector_test_data.js'
+import { SecretSymbol, ExampleClass, exmplClsInstance } from './reflector_test_data.js'
 
+const codeStyleMap = new Map([["style", "color: goldenrod;"]]);
+const headStyleMap = new Map([["style", "font-size: 15px; text-decoration: underline;"]]);
 
-console.warn("\n==================== CLASS DEFINITION ====================\n");
-console.log(ExampleClass.toString());
+console.info("\n\nStarting test...\n");
 
-console.log("\n==================== CLASS REFLECTION ====================\n");
-
-console.warn("Reflector.getProperties(ExampleClass):");
+console.warn("\n\nTESTING CLASS-LEVEL REFLECTION:\n", headStyleMap);
+console.log("Reflector.getProperties(ExampleClass);", codeStyleMap);
 console.log(Reflector.getProperties(ExampleClass));
-
-console.warn("\nReflector.getMethods(ExampleClass):");
+console.log("\nReflector.getMethods(ExampleClass);", codeStyleMap);
 console.log(Reflector.getMethods(ExampleClass));
-
-console.warn("\nReflector.getGetters(ExampleClass):");
+console.log("\nReflector.getGetters(ExampleClass);", codeStyleMap);
 console.log(Reflector.getGetters(ExampleClass));
-
-console.warn("\nReflector.getSetters(ExampleClass):");
+console.log("\nReflector.getSetters(ExampleClass);", codeStyleMap);
 console.log(Reflector.getSetters(ExampleClass));
+console.log("\nReflector.reflect(ExampleClass);", codeStyleMap);
+console.log(JSON.stringify(Reflector.reflect(ExampleClass), null, 2));
 
-console.warn("\nReflector.reflect(ExampleClass):");
-console.log(Reflector.reflect(ExampleClass));
+console.warn("\n\nTESTING INSTANCE-LEVEL REFLECTION:\n", headStyleMap);
+console.log("Reflector.getProperties(exmplClsInstance);", codeStyleMap);
+console.log(Reflector.getProperties(exmplClsInstance));
+console.log("\nReflector.getMethods(exmplClsInstance);", codeStyleMap);
+console.log(Reflector.getMethods(exmplClsInstance));
+console.log("\nReflector.getGetters(exmplClsInstance);", codeStyleMap);
+console.log(Reflector.getGetters(exmplClsInstance));
+console.log("\nReflector.getSetters(exmplClsInstance);", codeStyleMap);
+console.log(Reflector.getSetters(exmplClsInstance));
+console.log("\nReflector.reflect(exmplClsInstance);", codeStyleMap);
+console.log(JSON.stringify(Reflector.reflect(exmplClsInstance), null, 2));
 
-console.warn("\n==================== INSTANCE REFLECTION ====================\n");
-
-const instance = new ExampleClass("demo");
-console.warn("const instance = new ExampleClass(\"demo\");");
-
-console.warn("\nReflector.getProperties(instance):");
-console.log(Reflector.getProperties(instance));
-
-console.warn("\nReflector.getMethods(instance):");
-console.log(Reflector.getMethods(instance));
-
-console.warn("\nReflector.getGetters(instance):");
-console.log(Reflector.getGetters(instance));
-
-console.warn("\nReflector.getSetters(instance):");
-console.log(Reflector.getSetters(instance));
-
-console.warn("\nReflector.reflect(instance):");
-console.log(Reflector.reflect(instance));
-
-console.warn("\n==================== END OF DEMO ====================\n");
+console.info("\n\nTest complete!\n");

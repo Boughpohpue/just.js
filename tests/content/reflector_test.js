@@ -1,5 +1,5 @@
-import { Reflector } from '../content/reflector.js';
-import { SecretSymbol, ExampleClass, exmplClsInstance } from './reflector_test_data.js'
+import { Reflector } from '../../content/reflector.js';
+import { SecretSymbol, ExampleClass, exmplClsInstance } from '../data/reflector_test_data.js'
 
 
 const codeStyleMap = new Map([["style", "color: goldenrod;"]]);

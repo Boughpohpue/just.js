@@ -1,5 +1,5 @@
-import { Reflector } from '../compiled/just.js-1.0.1.js';
-import { SecretSymbol, ExampleClass, exmplClsInstance } from './reflector_test_data.js'
+import { Reflector } from '../../compiled/just.js-1.0.1.js';
+import { SecretSymbol, ExampleClass, exmplClsInstance } from '../data/reflector_test_data.js'
 
 const codeStyleMap = new Map([["style", "color: goldenrod;"]]);
 const headStyleMap = new Map([["style", "font-size: 15px; text-decoration: underline;"]]);

@@ -1,41 +1,50 @@
 export class Enum {
+  static _items = null;
+  static _valuesType = undefined;
+
+  static get items() {
+    return this._items ?? new Map(
+        Object.entries(this)
+        .filter(([name, inst]) =>
+          inst instanceof this));
+  }
+
+  static get valuesType() {
+    return this._valuesType;
+  }
+  static set valuesType(vt) {
+    if (this._valuesType) return;
+    this._valuesType = vt;
+    Object.freeze(this._valuesType);
+  }
+
+  static get names() { return Array.from(this.items.keys()).map((k) => k); }
+  static get values() { return Array.from(this.items.values()).map((v) => v.value); }
+
   #value = undefined;
+  get #_ctor() { return this.constructor; }
+  get name() { return this.#_ctor.getName(this); }
   get value() { return this.#value; }
-  get valueType() { return typeof this.#value; }
-  get name() { return this.constructor.getName(this); }
 
   constructor(value = undefined) {
-    const _ctor = this.constructor;
-    if (_ctor._sealed)
-      throw new Error("An Enum instance can be created only inside the enum class!");
-    if (value === null || value === undefined) return;
-    for (const [name, instance] of Object.entries(_ctor)) {
-      if (!(instance instanceof _ctor)) continue;
-      if (instance.value === value)
-        throw new Error("An Enum instance with the same value already exists!");
-      if (instance.valueType && instance.valueType !== typeof value)
-        throw new Error("An Enum value type must be consistent across the enum class!");
-    }
+    if (this.#_ctor._sealed)
+      throw new Error("An Enum instance must be created inside the enum class!");
+    const values = this.#_ctor.values;
+    if (value === null || value === undefined)
+      value = values.length === 0 ? 0 : values[values.length - 1] + 1;
+    if (values.includes(value))
+      throw new Error("An Enum instance with the same value already exists!");
+    if (this.#_ctor.valuesType && this.#_ctor.valuesType !== typeof value)
+      throw new Error("An Enum value type must be consistent across the enum class!");
     this.#value = value;
+    this.#_ctor.valuesType = typeof value;
     Object.freeze(this);
   }
 
-  static parse(e) {
-    if (e === undefined || e === null) return;
-    let valuesType = undefined;
-    const upper = typeof e === "string" ? e.toUpperCase() : undefined;
-    for (const [name, instance] of Object.entries(this)) {
-      if (!(instance instanceof this)) continue;
-      if (upper === name.toUpperCase()) return instance;
-      if (instance.value === e) return instance;
-      if (!valuesType && instance.valueType) valuesType = instance.valueType;
-    }
-    if (valuesType === typeof e) return e;
-  }
-  static ensure(e) {
-    if (e === undefined || e === null) return;
-    if (e instanceof this) return e;
-    return this.parse(e);
+  static getName(e) {
+    if (!(e instanceof this)) return;
+    for (const [name, instance] of this.items)
+      if (instance === e) return name;
   }
   static getValue(e, fallback = undefined) {
     const ensured = this.ensure(e) ?? this.ensure(fallback);
@@ -43,13 +52,23 @@ export class Enum {
       ? ensured.value
       : ensured;
   }
-  static getName(e) {
-    if (!(e instanceof this)) return;
-    for (const [name, instance] of Object.entries(this))
-      if (instance instanceof this && instance === e) return name;
+  static ensure(e) {
+    if (e === null || e === undefined) return;
+    if (e instanceof this) return e;
+    return this.parse(e);
+  }
+  static parse(e) {
+    if (e === null || e === undefined) return;
+    const upper = typeof e === "string" ? e.toUpperCase() : undefined;
+    for (const [name, instance] of this.items) {
+      if (name.toUpperCase() === upper) return instance;
+      if (instance.value === e) return instance;
+    }
+    if (this.valuesType === typeof e) return e;
   }
   static seal() {
     this._sealed = true;
+    this._items = this.items;
     Object.freeze(this);
     Object.freeze(this.prototype);
   }
